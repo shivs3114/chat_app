@@ -75,11 +75,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 for (var message in messages) {
                   Map<String, dynamic> data =
                       message.data() as Map<String, dynamic>;
-                  final messageText = data['Text'];
-                  final mSender = data['sender'];
+                  final messageText = data['Text'] ?? 'No Text';
+                  final mSender = data['sender'] ?? 'Unknown Sender';
+                  final user = _auth.currentUser?.email;
                   final widget = MessageBubble(
                     sender: mSender,
                     text: messageText,
+                    isMe: user == mSender,
                   );
                   messagesBubbles.add(widget);
                 }
@@ -112,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       //Implement send functionality.
                       messageController.clear();
                       _firestore.collection('messages').add(
-                          {'text': text, 'sender': _auth.currentUser?.email});
+                          {'Text': text, 'sender': _auth.currentUser?.email});
                     },
                     child: Text(
                       'Send',
@@ -130,33 +132,36 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessageBubble extends StatelessWidget {
-  final String? sender;
-  final String? text;
-  MessageBubble({this.sender, this.text});
+  final String sender;
+  final String text;
+  final bool isMe;
+  MessageBubble({required this.sender, required this.text, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment:
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Material(
               borderRadius: BorderRadius.circular(30),
               elevation: 5.0,
-              color: Colors.green,
+              color: isMe ? Colors.green : Colors.white,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Text(
-                  text!,
-                  style: TextStyle(fontSize: 15, color: Colors.white),
+                  text,
+                  style: TextStyle(
+                      fontSize: 15, color: isMe ? Colors.white : Colors.black),
                 ),
               ),
             ),
             Text(
-              sender!,
-              style: TextStyle(fontSize: 12, color: Colors.black26),
+              sender,
+              style: TextStyle(fontSize: 12, color: Colors.white12),
             ),
           ],
         ));

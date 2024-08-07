@@ -32,13 +32,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Hero(
                     tag: 'logo',
                     child: Container(
-                      height: 200.0,
+                      height: 100.0,
                       child: Image.asset('images/logo.png'),
                     ),
                   ),
                   Text(
                     'Registration',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                   )
                 ],
               ),
